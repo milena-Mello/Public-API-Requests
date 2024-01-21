@@ -1,6 +1,8 @@
 async function getStudentData() {
-  const response = await fetch('https://randomuser.me/api/?results=10');
+  const response = await fetch('https://randomuser.me/api/?results=12');
   const data = await response.json();
-  console.log(data.results);
-  return data.results;
+  console.log(data);
+  return data;
 }
+
+getStudentData();
