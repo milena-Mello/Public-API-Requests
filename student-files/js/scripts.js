@@ -4,10 +4,37 @@ let studentData = [];
 
 // Request data from API:
 async function getStudentData() {
-  const response = await fetch('https://randomuser.me/api/?results=12');
+  const response = await fetch('https://randomuser.me/api/?results=12&nat=us');
   const data = await response.json();
   studentData = data;
   displayStudentData(data);
+  searchBar();
+}
+
+// Search bar:
+function searchBar() {
+    const searchHTML = `
+    <form action="#" method="get">
+        <input type="search" id="search-input" class="search-input" placeholder="Search...">
+        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+    </form>`;
+    searchContainer.insertAdjacentHTML('beforeend', searchHTML);
+    const searchInput = document.querySelector('#search-input');
+    const searchSubmit = document.querySelector('#search-submit');
+    searchSubmit.addEventListener('click', (event) => {
+        event.preventDefault();
+        const searchValue = searchInput.value.toLowerCase();
+        const studentCards = document.querySelectorAll('.card');
+        for(let i = 0; i < studentCards.length; i++) {
+            const studentName = studentCards[i].querySelector('#name').textContent.toLowerCase();
+            if(studentName.includes(searchValue)) {
+                studentCards[i].style.display = '';
+            } else {
+                studentCards[i].style.display = 'none';
+            }
+        }
+    });
+
 }
 
 // Display student data:
