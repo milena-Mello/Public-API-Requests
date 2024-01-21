@@ -84,12 +84,42 @@ function displayStudentModal(studentName) {
                         <p class="modal-text">${studentName.location.street.number} ${studentName.location.street.name}, ${studentName.location.state}, ${studentName.location.postcode}</p>
                         <p class="modal-text">Birthday: ${formattedDate}</p>
                     </div>
+                </div>
+                <div class="modal-btn-container">
+                    <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+                    <button type="button" id="modal-next" class="modal-next btn">Next</button>
                 </div>`;
     gallery.insertAdjacentHTML('afterend', modalHTML);
     const modal = document.querySelector('.modal-container');
     const btnClose = document.querySelector('.modal-close-btn');
     modal.style.display = 'block';
 
+    // Next and previous buttons:
+    const btnNext = document.querySelector('#modal-next');
+    const btnPrev = document.querySelector('#modal-prev');
+    const studentCards = document.querySelectorAll('.card');
+    const studentNames = [];
+    for(let i = 0; i < studentCards.length; i++) {
+        const studentName = studentCards[i].querySelector('#name').textContent;
+        studentNames.push(studentName);
+    }
+    btnNext.addEventListener('click', () => {
+        const studentIndex = studentNames.indexOf(studentName.name.first + ' ' + studentName.name.last);
+        if(studentIndex < studentNames.length - 1) {
+            modal.remove();
+            const nextStudent = studentData.results[studentIndex + 1];
+            displayStudentModal(nextStudent);
+        }}
+    );
+    btnPrev.addEventListener('click', () => {
+        const studentIndex = studentNames.indexOf(studentName.name.first + ' ' + studentName.name.last);
+        if(studentIndex > 0) {
+            modal.remove();
+            const prevStudent = studentData.results[studentIndex - 1];
+            displayStudentModal(prevStudent);
+        }}
+    );
+    
     // Close modal:
     btnClose.addEventListener('click', () => {
         modal.style.display = 'none';
