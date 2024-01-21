@@ -1,6 +1,12 @@
+const searchContainer = document.querySelector('.search-container');
+const gallery = document.querySelector('.gallery');
+let studentData = [];
+
 async function getStudentData() {
   const response = await fetch('https://randomuser.me/api/?results=12');
   const data = await response.json();
+  studentData = data;
+  console.log(data)
   displayStudentData(data);
 }
 
@@ -17,7 +23,49 @@ function displayStudentData(data) {
             <p class="card-text cap">${student.location.city}, ${student.location.state}</p>
         </div>
     </div>`).join('');
-    document.querySelector('.gallery').insertAdjacentHTML('beforeend', studentHTML);
+    gallery.insertAdjacentHTML('beforeend', studentHTML);
 };
+
+gallery.addEventListener('click', (event) => {
+    const galleryCard = event.target.closest('.card');
+    console.log(galleryCard);
+    if(galleryCard){
+     const galleryCardName = event.target.closest('.card').querySelector('#name').textContent;
+     const studentName = studentData.results.find(student => student.name.first + ' ' + student.name.last === galleryCardName);
+     displayStudentModal(studentName);
+} else {
+    return;
+}
+});
+
+function displayStudentModal(studentName) {
+    const birthdayDate = new Date(studentName.dob.date);
+    const formattedDate = birthdayDate.toLocaleDateString("en-US", { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const modalHTML = `
+    <div class="modal-container">
+                <div class="modal">
+                    <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+                    <div class="modal-info-container">
+                        <img class="modal-img" src="${studentName.picture.medium}" alt="profile picture">
+                        <h3 id="name" class="modal-name cap">${studentName.name.first} ${studentName.name.last}</h3>
+                        <p class="modal-text">${studentName.email}</p>
+                        <p class="modal-text cap">${studentName.location.city}</p>
+                        <hr>
+                        <p class="modal-text">${studentName.phone}</p>
+                        <p class="modal-text">${studentName.location.street.number} ${studentName.location.street.name}, ${studentName.location.state}, ${studentName.location.postcode}</p>
+                        <p class="modal-text">Birthday: ${formattedDate}</p>
+                    </div>
+                </div>`;
+    gallery.insertAdjacentHTML('afterend', modalHTML);
+    const modal = document.querySelector('.modal-container');
+    const btnClose = document.querySelector('.modal-close-btn');
+    modal.style.display = 'block';
+
+    // Close modal:
+    btnClose.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+}
+
 
 getStudentData();
