@@ -2,14 +2,15 @@ const searchContainer = document.querySelector('.search-container');
 const gallery = document.querySelector('.gallery');
 let studentData = [];
 
+// Request data from API:
 async function getStudentData() {
   const response = await fetch('https://randomuser.me/api/?results=12');
   const data = await response.json();
   studentData = data;
-  console.log(data)
   displayStudentData(data);
 }
 
+// Display student data:
 function displayStudentData(data) {
     const students = data.results;
     let studentHTML = students.map(student => 
@@ -26,9 +27,9 @@ function displayStudentData(data) {
     gallery.insertAdjacentHTML('beforeend', studentHTML);
 };
 
+// Event Listener for click into student card:
 gallery.addEventListener('click', (event) => {
     const galleryCard = event.target.closest('.card');
-    console.log(galleryCard);
     if(galleryCard){
      const galleryCardName = event.target.closest('.card').querySelector('#name').textContent;
      const studentName = studentData.results.find(student => student.name.first + ' ' + student.name.last === galleryCardName);
@@ -38,6 +39,7 @@ gallery.addEventListener('click', (event) => {
 }
 });
 
+// Display student modal:
 function displayStudentModal(studentName) {
     const birthdayDate = new Date(studentName.dob.date);
     const formattedDate = birthdayDate.toLocaleDateString("en-US", { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -67,5 +69,5 @@ function displayStudentModal(studentName) {
     });
 }
 
-
+// Call API function:
 getStudentData();
